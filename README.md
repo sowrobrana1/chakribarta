@@ -5,6 +5,47 @@
 অ্যাপে রূপ নেবে। Full plan:
 `~/workspace/goals/chakribarta-app-play-store/files/chakribarta-full-plan.md`
 
+## Status (24 Oct 2026) — Feature phase complete: বয়স ক্যালকুলেটর, AI CV Maker, Push groundwork
+
+✅ **বয়স ক্যালকুলেটর** (`/age`) — পুরোপুরি client-side: জন্ম তারিখ +
+হিসাবের তারিখ (ডিফল্ট আজ; সাধারণত সার্কুলারের আবেদনের শেষ তারিখ)
+দিলে সঠিক বয়স **বছর/মাস/দিনে** (বাংলা সংখ্যায়)। Quick-check তালিকা:
+সাধারণ প্রার্থী ১৮–৩০, মুক্তিযোদ্ধা/শহীদ মুক্তিযোদ্ধার সন্তান ১৮–৩২,
+পুলিশ কনস্টেবল ১৮–২০ — প্রতিটির পাশে ✓/হয়নি/পার হয়ে গেছে স্ট্যাটাস।
+সঙ্গে পরিষ্কার disclaimer: এটি সাধারণ তথ্য, প্রতিটি সার্কুলারের নিজস্ব
+বিজ্ঞপ্তিই চূড়ান্ত। Age-এর হিসাব leap-year/boundary case দিয়ে যাচাই করা।
+
+✅ **AI CV Maker** (`/cv` + `POST /api/cv`) — বাংলা ফর্ম (নাম, পিতা/মাতা,
+বর্তমান/স্থায়ী ঠিকানা, মোবাইল, ইমেইল, জন্ম তারিখ, একাধিক সারির
+শিক্ষাগত যোগ্যতা, অভিজ্ঞতা, দক্ষতা, ভাষা) → পরিচ্ছন্ন printable CV
+preview (Career Objective, Personal Info, শিক্ষার টেবিল, অভিজ্ঞতা,
+দক্ষতা, ভাষা, Declaration + স্বাক্ষর); print stylesheet-এ শুধু CV
+sheet-টাই ছাপা হয় (browser print দিয়ে PDF সেভ করা যায়)।
+- **AI polish**: `GEMINI_API_KEY` সেট থাকলে `/api/cv` Google Gemini
+  (model chain: `gemini-flash-latest` → `gemini-3-flash-preview` →
+  `gemini-3.8-flash`) দিয়ে Career Objective ও দক্ষতার সারাংশ polished
+  English-এ সাজায়। Key না থাকলে বা API fail হলে template text ব্যবহৃত
+  হয় (`aiUsed:false`) — CV তৈরি কখনোই আটকায় না; পেজে তখন ছোট নোট
+  দেখায় যে AI polish বন্ধ আছে।
+
+✅ **Push notification groundwork** (`/api/push/key`,
+`/api/push/subscribe`, header-এর `PushBell`, `sw.js`-এ push +
+notificationclick handler) — news sites-এর মতোই self-hosted Web Push:
+- Bell বোতামটি হোম header-এ থাকে, কিন্তু `NEXT_PUBLIC_VAPID_PUBLIC_KEY`
+  সেট না থাকলে **নিজে থেকেই লুকিয়ে থাকে**।
+- Subscription সংরক্ষণ `lib/push.ts`-এ, `lib/admin.ts`-এর একই switch
+  অনুসরণ করে: Supabase mode-এ `push_subscriptions` টেবিলে
+  (platform `web`, token = endpoint, subscription JSON, categories);
+  local mode-এ কিছুই durable সংরক্ষণ না করে friendly "শীঘ্রই আসছে"
+  JSON ফেরত দেয়।
+- **VAPID key এখনো তৈরি হয়নি** — key জোড়া তৈরি ও env সেট করা
+  Supabase wiring-এর সঙ্গে করা পরের ধাপ (নিচে TODO)। Push পাঠানোর
+  sender (নতুন সার্কুলারে notification) সেই ধাপের পর আসবে।
+
+✅ **নেভিগেশন** — BottomNav এখন ৫ আইটেম (হোম, ক্যাটাগরি, সেভ করা,
+**টুলস**, ফলাফল); `/tools` পেজে দুই টুলের কার্ড; হোমে search-এর উপরে
+shortcut row (🎂 বয়স ক্যালকুলেটর, 📄 AI CV তৈরি করুন)।
+
 ## Status (24 Oct 2026) — Phase 2 complete: admin panel + ingest skeleton
 
 ✅ **Admin panel** (`/app/admin`) — পাসওয়ার্ড গেট (`ADMIN_PASSWORD` env,
@@ -65,6 +106,10 @@ console নোট দিয়ে exit 0।
 | Admin API — login/logout, circulars CRUD (session-guarded) | `app/api/admin/*` |
 | Admin data layer — Supabase (service-role) ⇄ local read-only switch | `lib/admin.ts`, `lib/admin-auth.ts` |
 | Ingest monitor (skeleton) — candidates সংগ্রহ, কখনো auto-publish নয় | `scripts/collect.mjs` |
+| বয়স ক্যালকুলেটর — exact age (বছর/মাস/দিন) + সাধারণ বয়সসীমা quick-check | `app/age/page.tsx`, `components/AgeCalculator.tsx` |
+| AI CV Maker — বাংলা ফর্ম → printable CV preview; Gemini template type + types/template | `app/cv/page.tsx`, `components/CvMaker.tsx`, `app/api/cv/route.ts`, `lib/cv.ts` |
+| টুলস পেজ + হোম shortcut row | `app/tools/page.tsx`, `components/ToolsShortcut.tsx` |
+| Push groundwork — VAPID key route, subscribe API, header bell, SW push handlers | `app/api/push/*`, `lib/push.ts`, `components/PushBell.tsx`, `public/sw.js` |
 
 ## চালাতে যা লাগবে
 
@@ -111,14 +156,21 @@ Candidate গুলো যাচাইয়ের ধাপ: প্রতিট
       `data/candidates.json` (needs_verification)। বাকি: Teletalk/সরকারি source
       যোগ, official-source auto-verify ধাপ, মেয়াদ শেষে auto-expire
 - [ ] **Capacitor Android shell** — package id ঠিক করে Play Console-এ app entry তৈরি
-- [ ] **FCM push** — Firebase project, নতুন সার্কুলারে notification, deadline reminder;
-      `push_subscriptions` টেবিলে token জমা
+- [x] **Push groundwork** — Web Push subscribe flow, VAPID key route,
+      `push_subscriptions` সংরক্ষণ (Supabase mode), SW push handler।
+      বাকি (activation): **VAPID key pair তৈরি** (`npx web-push
+      generate-vapid-keys`) → Vercel env-এ `NEXT_PUBLIC_VAPID_PUBLIC_KEY`
+      + `VAPID_PRIVATE_KEY` সেট → তারপর push sender (নতুন সার্কুলারে
+      notification + deadline reminder, `web-push` প্যাকেজ দিয়ে)
 - [x] **সার্চ** — হোমে client-side লাইভ ফিল্টার (org/title/category)
 - [ ] **Filter উন্নতি** — যোগ্যতা (SSC/HSC/Honours) ও জেলা দিয়ে filter
 - [x] **সেভ করা পেজ** — `/saved` (localStorage-ভিত্তিক)
 - [ ] **Privacy Policy পেজ** (website-এ) — Play Store submit-এর জন্য বাধ্যতামূলক
 - [ ] **AdMob** — Capacitor shell-এর পর বিজ্ঞাপন যোগ
-- [ ] V1.5: AI CV Maker (Gemini), বয়স ক্যালকুলেটর, category-wise notification subscribe
+- [x] V1.5 feature phase: **AI CV Maker** (Gemini polish + template fallback),
+      **বয়স ক্যালকুলেটর**, push subscribe groundwork — বাকি:
+      category-wise notification subscribe UI (subscribe API ইতিমধ্যে
+      categories গ্রহণ করে) ও push sender চালু করা
 
 ## Env vars (সারসংক্ষেপ)
 
@@ -128,3 +180,6 @@ Candidate গুলো যাচাইয়ের ধাপ: প্রতিট
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | client + server | Supabase project তৈরির পর |
 | `SUPABASE_SERVICE_ROLE_KEY` | শুধু server (admin writes) | Admin CRUD চালু করতে সেট করতে হবে |
 | `ADMIN_PASSWORD` | শুধু server (admin login gate) | /admin খুলতে সেট করতে হবে |
+| `GEMINI_API_KEY` | শুধু server (/api/cv AI polish) | ঐচ্ছিক — না থাকলে CV Maker template mode-এ চলে |
+| `NEXT_PUBLIC_VAPID_PUBLIC_KEY` | client + server (push subscribe) | VAPID pair তৈরি করে সেট করতে হবে (Supabase wiring-এর সঙ্গে) |
+| `VAPID_PRIVATE_KEY` | শুধু server (push পাঠানো) | VAPID pair তৈরি করে সেট করতে হবে (Supabase wiring-এর সঙ্গে) |

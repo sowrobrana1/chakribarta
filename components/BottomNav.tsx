@@ -4,6 +4,7 @@ const ITEMS = [
   { label: "হোম", href: "/" },
   { label: "ক্যাটাগরি", href: "/" },
   { label: "সেভ করা", href: "/saved" },
+  { label: "টুলস", href: "/tools" },
   { label: "ফলাফল", href: "/?cat=ফলাফল" },
 ];
 

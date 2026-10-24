@@ -1,6 +1,7 @@
-/* ChakriBarta service worker — minimal offline support.
-   Static assets: cache-first. Pages: network-first with cache fallback. */
-const CACHE = "chakribarta-v1";
+/* ChakriBarta service worker — minimal offline support + Web Push.
+   Static assets: cache-first. Pages: network-first with cache fallback.
+   Push: shows the notification sent by the server (title/body/url). */
+const CACHE = "chakribarta-v2";
 const PRECACHE = [
   "/icons/icon-192.png",
   "/icons/icon-512.png",
@@ -75,5 +76,40 @@ self.addEventListener("fetch", (event) => {
           .then((hit) => hit || caches.match("/"))
           .then((hit) => hit || Response.error())
       )
+  );
+});
+
+/* ---------- Web Push ---------- */
+self.addEventListener("push", (event) => {
+  let data = {};
+  try {
+    data = event.data ? event.data.json() : {};
+  } catch {
+    data = { body: event.data ? event.data.text() : "" };
+  }
+  const title = data.title || "ChakriBarta — নতুন সার্কুলার";
+  const options = {
+    body: data.body || "নতুন চাকরির সার্কুলার এসেছে — দেখে নিন।",
+    icon: "/icons/icon-192.png",
+    badge: "/icons/icon-192.png",
+    data: { url: data.url || "/" },
+  };
+  event.waitUntil(self.registration.showNotification(title, options));
+});
+
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+  const url = (event.notification.data && event.notification.data.url) || "/";
+  event.waitUntil(
+    self.clients
+      .matchAll({ type: "window", includeUncontrolled: true })
+      .then((clients) => {
+        for (const client of clients) {
+          if (client.url.includes(url) && "focus" in client) {
+            return client.focus();
+          }
+        }
+        return self.clients.openWindow(url);
+      })
   );
 });

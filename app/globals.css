@@ -696,3 +696,249 @@ button {
   gap: 10px;
   margin-top: 10px;
 }
+
+/* ---------- Feature phase: tools, push, age, CV ---------- */
+.form-field textarea {
+  padding: 11px 13px;
+  border: 1.5px solid #cfd8d2;
+  border-radius: 11px;
+  font: inherit;
+  font-size: 15.5px;
+  background: #fff;
+  color: var(--ink);
+  width: 100%;
+  resize: vertical;
+}
+
+.form-field textarea:focus {
+  outline: none;
+  border-color: var(--green);
+}
+
+.tools-row {
+  display: flex;
+  gap: 10px;
+  padding: 14px 16px 0;
+}
+
+.tools-chip {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  background: #fff;
+  color: var(--green);
+  font-weight: 700;
+  font-size: 15.5px;
+  padding: 11px 8px;
+  border-radius: 14px;
+  box-shadow: var(--card-shadow);
+}
+
+.tool-card {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.tool-icon {
+  font-size: 30px;
+  line-height: 1.2;
+  flex: none;
+}
+
+.push-bell {
+  position: relative;
+  display: inline-flex;
+}
+
+.push-note {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 230px;
+  background: #fff;
+  color: var(--ink);
+  border-radius: 12px;
+  box-shadow: var(--card-shadow);
+  padding: 10px 12px;
+  font-size: 13.5px;
+  line-height: 1.5;
+  z-index: 30;
+}
+
+.age-result {
+  margin-top: 16px;
+  background: var(--chip-bg);
+  border-radius: 16px;
+  padding: 18px 16px;
+  text-align: center;
+}
+
+.age-big {
+  font-size: 25px;
+  font-weight: 800;
+  color: var(--green);
+  margin-bottom: 6px;
+}
+
+.age-limit-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 0;
+  border-top: 1px solid #e3eae6;
+}
+
+.age-limit-row:first-child {
+  border-top: none;
+  padding-top: 4px;
+}
+
+.age-limit-label {
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.edu-row {
+  border: 1.5px solid #e3eae6;
+  border-radius: 14px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ---------- CV sheet (screen + print) ---------- */
+.cv-print-area {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.cv-sheet {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: var(--card-shadow);
+  padding: 34px 30px;
+  color: #111;
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+.cv-head {
+  text-align: center;
+  border-bottom: 2.5px solid var(--green);
+  padding-bottom: 14px;
+}
+
+.cv-head h1 {
+  font-size: 27px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+.cv-contact {
+  font-size: 13.5px;
+  color: #444;
+  margin-top: 5px;
+  font-family: "Hind Siliguri", sans-serif;
+}
+
+.cv-section-title {
+  font-size: 16.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--green);
+  border-bottom: 1px solid #cfd8d2;
+  padding-bottom: 4px;
+  margin: 20px 0 10px;
+}
+
+.cv-text {
+  font-size: 14.5px;
+  line-height: 1.65;
+  text-align: justify;
+}
+
+.cv-text.pre-line {
+  white-space: pre-line;
+}
+
+.cv-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14.5px;
+}
+
+.cv-table th,
+.cv-table td {
+  text-align: left;
+  padding: 4px 8px 4px 0;
+  vertical-align: top;
+  line-height: 1.5;
+}
+
+.cv-table th {
+  font-weight: 600;
+  width: 170px;
+  color: #333;
+}
+
+.cv-edu-table th,
+.cv-edu-table td {
+  border: 1px solid #b9c6bf;
+  padding: 6px 8px;
+}
+
+.cv-edu-table th {
+  width: auto;
+  background: #eef4f0;
+}
+
+.cv-signature {
+  margin-top: 38px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  font-size: 14.5px;
+}
+
+.cv-signature span {
+  border-top: 1px solid #111;
+  padding-top: 4px;
+  color: #444;
+}
+
+/* ---------- Print: only the CV sheet ---------- */
+@media print {
+  body {
+    background: #fff;
+  }
+
+  .phone-frame {
+    box-shadow: none;
+    max-width: none;
+  }
+
+  .app-header,
+  .bottom-nav,
+  .app-footer,
+  .no-print {
+    display: none !important;
+  }
+
+  .admin-main {
+    padding: 0;
+  }
+
+  .cv-sheet {
+    box-shadow: none;
+    border-radius: 0;
+    padding: 10px 6px;
+  }
+}

@@ -1,5 +1,6 @@
 import Header from "@/components/Header";
 import HomeFeed from "@/components/HomeFeed";
+import ToolsShortcut from "@/components/ToolsShortcut";
 import BottomNav from "@/components/BottomNav";
 import { getCirculars } from "@/lib/data";
 
@@ -16,6 +17,7 @@ export default async function HomePage({ searchParams }: HomeProps) {
   return (
     <>
       <Header />
+      <ToolsShortcut />
       <HomeFeed jobs={jobs} initialCategory={initialCategory} />
       <BottomNav active={initialCategory === "ফলাফল" ? "ফলাফল" : "হোম"} />
     </>
