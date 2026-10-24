@@ -34,6 +34,14 @@ export function adminSource(): AdminSource {
   return isDbAdminConfigured() ? "supabase" : "local";
 }
 
+/**
+ * Fetch override that forces `cache: "no-store"` on every PostgREST
+ * request, so Next.js never serves stale Data Cache responses for
+ * supabase-js calls (same fix as lib/supabase.ts).
+ */
+const noStoreFetch: typeof fetch = (input, init) =>
+  fetch(input, { ...init, cache: "no-store" });
+
 let serviceClient: SupabaseClient | null = null;
 
 export function getServiceSupabase(): SupabaseClient | null {
@@ -42,7 +50,10 @@ export function getServiceSupabase(): SupabaseClient | null {
     serviceClient = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL as string,
       process.env.SUPABASE_SERVICE_ROLE_KEY as string,
-      { auth: { persistSession: false, autoRefreshToken: false } }
+      {
+        auth: { persistSession: false, autoRefreshToken: false },
+        global: { fetch: noStoreFetch },
+      }
     );
   }
   return serviceClient;
