@@ -7,6 +7,7 @@ import {
   isDbAdminConfigured,
   parseCircularInput,
 } from "@/lib/admin";
+import { sendPushForCircular } from "@/lib/push-send";
 
 export const dynamic = "force-dynamic";
 
@@ -59,6 +60,13 @@ export async function POST(request: Request) {
 
   try {
     const item = await adminCreateCircular(parsed.value);
+    // New live circular → notify push subscribers. Only on CREATE with
+    // status "active" (never on drafts, edits, or sample rows). The
+    // sender is fail-soft; the extra catch is belt-and-braces so a push
+    // problem can never fail the create itself.
+    if (item.status === "active" && !item.is_sample) {
+      await sendPushForCircular(item).catch(() => {});
+    }
     return NextResponse.json({ ok: true, item }, { status: 201 });
   } catch (err) {
     return NextResponse.json(

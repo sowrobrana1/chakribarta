@@ -38,9 +38,13 @@ notificationclick handler) — news sites-এর মতোই self-hosted Web Pu
   (platform `web`, token = endpoint, subscription JSON, categories);
   local mode-এ কিছুই durable সংরক্ষণ না করে friendly "শীঘ্রই আসছে"
   JSON ফেরত দেয়।
-- **VAPID key এখনো তৈরি হয়নি** — key জোড়া তৈরি ও env সেট করা
-  Supabase wiring-এর সঙ্গে করা পরের ধাপ (নিচে TODO)। Push পাঠানোর
-  sender (নতুন সার্কুলারে notification) সেই ধাপের পর আসবে।
+- **VAPID key pair তৈরি হয়ে Vercel-এ সেট করা হয়েছে** (24 Oct 2026)।
+- ✅ **Push sender** (`lib/push-send.ts`) — admin panel থেকে নতুন
+  **active** সার্কুলার তৈরি হলেই (draft/edit/sample-এ নয়) matching
+  subscriber-দের notification যায়: categories খালি (= সব) অথবা
+  সার্কুলারের category থাকলে; dead endpoint (404/410) auto-deactivate;
+  সম্পূর্ণ fail-soft। Manual test: `scripts/send-test-push.mjs`
+  (env সেট করে `node scripts/send-test-push.mjs`)।
 
 ✅ **নেভিগেশন** — BottomNav এখন ৫ আইটেম (হোম, ক্যাটাগরি, সেভ করা,
 **টুলস**, ফলাফল); `/tools` পেজে দুই টুলের কার্ড; হোমে search-এর উপরে
@@ -156,12 +160,11 @@ Candidate গুলো যাচাইয়ের ধাপ: প্রতিট
       `data/candidates.json` (needs_verification)। বাকি: Teletalk/সরকারি source
       যোগ, official-source auto-verify ধাপ, মেয়াদ শেষে auto-expire
 - [ ] **Capacitor Android shell** — package id ঠিক করে Play Console-এ app entry তৈরি
-- [x] **Push groundwork** — Web Push subscribe flow, VAPID key route,
-      `push_subscriptions` সংরক্ষণ (Supabase mode), SW push handler।
-      বাকি (activation): **VAPID key pair তৈরি** (`npx web-push
-      generate-vapid-keys`) → Vercel env-এ `NEXT_PUBLIC_VAPID_PUBLIC_KEY`
-      + `VAPID_PRIVATE_KEY` সেট → তারপর push sender (নতুন সার্কুলারে
-      notification + deadline reminder, `web-push` প্যাকেজ দিয়ে)
+- [x] **Push groundwork + sender** — Web Push subscribe flow, VAPID key
+      route, `push_subscriptions` সংরক্ষণ (Supabase mode), SW push
+      handler; VAPID pair Vercel env-এ সেট (24 Oct 2026); sender
+      (`lib/push-send.ts`, `web-push` প্যাকেজ) নতুন active সার্কুলারে
+      notification পাঠায়। বাকি: deadline reminder
 - [x] **সার্চ** — হোমে client-side লাইভ ফিল্টার (org/title/category)
 - [ ] **Filter উন্নতি** — যোগ্যতা (SSC/HSC/Honours) ও জেলা দিয়ে filter
 - [x] **সেভ করা পেজ** — `/saved` (localStorage-ভিত্তিক)
@@ -170,7 +173,7 @@ Candidate গুলো যাচাইয়ের ধাপ: প্রতিট
 - [x] V1.5 feature phase: **AI CV Maker** (Gemini polish + template fallback),
       **বয়স ক্যালকুলেটর**, push subscribe groundwork — বাকি:
       category-wise notification subscribe UI (subscribe API ইতিমধ্যে
-      categories গ্রহণ করে) ও push sender চালু করা
+      categories গ্রহণ করে)। Push sender চালু (24 Oct 2026)
 
 ## Env vars (সারসংক্ষেপ)
 
