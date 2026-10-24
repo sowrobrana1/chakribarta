@@ -167,6 +167,18 @@ export async function getCirculars(
   return applyQuery(all, query);
 }
 
+/** Raw-record normalizer, shared with the admin layer (lib/admin.ts). */
+export const normalizeCircular = normalize;
+
+/**
+ * Every record in the local fallback file, with NO visibility
+ * filtering (drafts/expired included). Used by the admin panel's
+ * read-only mode when Supabase is not connected.
+ */
+export async function getLocalCircularsAll(): Promise<Circular[]> {
+  return loadFromLocalFile();
+}
+
 /**
  * One circular by id. Ignores the deadline rule so shared / saved
  * links keep working after a deadline passes; drafts/expired rows
