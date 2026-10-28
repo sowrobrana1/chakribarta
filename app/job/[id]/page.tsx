@@ -101,6 +101,37 @@ export default async function JobDetailsPage({ params }: Props) {
           <span className="btn-apply disabled">আবেদনের লিংক শীঘ্রই আসছে</span>
         )}
 
+        <div
+          style={{
+            marginTop: 16,
+            padding: "12px 14px",
+            borderRadius: 10,
+            background: "#f1f8f4",
+            border: "1px solid #c8e6c9",
+            fontSize: 14,
+            lineHeight: 1.8,
+          }}
+        >
+          {job.source_url && job.source_url !== applyHref ? (
+            <p style={{ margin: "0 0 8px" }}>
+              মূল বিজ্ঞপ্তি (অফিসিয়াল উৎস):{" "}
+              <a
+                href={job.source_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ wordBreak: "break-all" }}
+              >
+                মূল বিজ্ঞপ্তি দেখুন
+              </a>
+            </p>
+          ) : null}
+          <p style={{ margin: 0 }}>
+            দাবিত্যাগ: ChakriBarta কোনো সরকারি সংস্থা নয় এবং সরকারের
+            প্রতিনিধিত্ব করে না। এই তথ্য সংশ্লিষ্ট দপ্তরের বিজ্ঞপ্তি থেকে
+            সংগৃহীত — আবেদনের আগে মূল বিজ্ঞপ্তিটি যাচাই করে নিন।
+          </p>
+        </div>
+
         <SaveShareButtons jobId={job.id} title={`${job.org} — ${job.title}`} />
       </main>
     </>
