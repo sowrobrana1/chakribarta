@@ -37,6 +37,19 @@ export default async function JobDetailsPage({ params }: Props) {
   if (!job) notFound();
 
   const applyHref = job.apply_url ?? job.source_url;
+  // Official-source link for the explicit "তথ্যসূত্র (অফিসিয়াল)" line.
+  // Only recognized official hosts are shown, so aggregator/portal links
+  // on private postings never get labeled as official.
+  const OFFICIAL_HOST_RE =
+    /(teletalk\.com\.bd|gov\.bd|\.ac\.bd|edu\.bd|bankasia-bd\.com|sonalibank\.com\.bd|rescue\.org|brac\.net|actionaidbd\.org|coastbd\.net|bb\.org\.bd)$/;
+  let officialSource: { url: string; host: string } | null = null;
+  try {
+    const u = new URL(applyHref ?? "");
+    const h = u.hostname.replace(/^www\./, "");
+    if (OFFICIAL_HOST_RE.test(h)) officialSource = { url: u.toString(), host: h };
+  } catch {
+    officialSource = null;
+  }
   const rows: Array<[string, string]> = [
     ["পদ সংখ্যা", job.posts_count != null ? `${toBn(job.posts_count)}টি` : "—"],
     ["বেতন স্কেল", job.salary ?? "—"],
@@ -122,6 +135,19 @@ export default async function JobDetailsPage({ params }: Props) {
                 style={{ wordBreak: "break-all" }}
               >
                 মূল বিজ্ঞপ্তি দেখুন
+              </a>
+            </p>
+          ) : null}
+          {officialSource ? (
+            <p style={{ margin: "0 0 8px" }}>
+              তথ্যসূত্র (অফিসিয়াল):{" "}
+              <a
+                href={officialSource.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ wordBreak: "break-all" }}
+              >
+                {officialSource.host}
               </a>
             </p>
           ) : null}
